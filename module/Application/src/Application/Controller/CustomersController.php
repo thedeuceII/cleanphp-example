@@ -2,7 +2,7 @@
 
 namespace Application\Controller;
 
-use CleanPhp\Invoicer\Domain\Entity\Customer;
+use CleanPhp\Invoicer\Domain\Repository\CustomerRepositoryInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
 /**
@@ -12,16 +12,25 @@ use Zend\Mvc\Controller\AbstractActionController;
 class CustomersController extends AbstractActionController
 {
     /**
+     * @var CustomerRepositoryInterface
+     */
+    public $customerRepository;
+
+    /**
+     * @param CustomerRepositoryInterface $customers
+     */
+    public function __construct(CustomerRepositoryInterface $customers)
+    {
+        $this->customerRepository = $customers;
+    }
+
+    /**
      * @return array
      */
     public function indexAction()
     {
         return [
-            'customers' => [
-                (new Customer())->setName('ABC Company'),
-                (new Customer())->setName('ACME Corporation'),
-                (new Customer())->setName('XYZ, LLC')
-            ]
+            'customers' => $this->customerRepository->getAll()
         ];
     }
 }
